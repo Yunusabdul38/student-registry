@@ -32,15 +32,12 @@ pub async fn add_student(
         .iter()
         .find(|user| user.1.data.email == student.email);
 
-    match user {
-        Some(_) => {
-            let err = format!("USER WITH EMAIL {} exit", student.email);
-            let message = Response {
-                message: err.clone(),
-            };
-            return Err((StatusCode::BAD_GATEWAY, Json(message)));
-        }
-        None => {}
+    if user.is_some() {
+        let err = format!("USER WITH EMAIL {} exit", student.email);
+        let message = Response {
+            message: err.clone(),
+        };
+        return Err((StatusCode::BAD_GATEWAY, Json(message)));
     }
 
     let student: StudentData = StudentData {
@@ -78,15 +75,15 @@ pub async fn update_student(
             let response = Response {
                 message: "STUDENT DATA UPDATED SUCCESFULLY".to_string(),
             };
-            return Ok((StatusCode::OK, Json(response)));
+            Ok((StatusCode::OK, Json(response)))
         }
         None => {
             let response = Response {
                 message: "STUDENT NOT FOUND".to_string(),
             };
-            return Ok((StatusCode::NOT_FOUND, Json(response)));
+            Ok((StatusCode::NOT_FOUND, Json(response)))
         }
-    };
+    }
 }
 
 pub async fn update_student_status(
@@ -102,7 +99,7 @@ pub async fn update_student_status(
             let response = Response {
                 message: "STUDENT DATA UPDATED SUCCESFULLY".to_string(),
             };
-            return Ok((StatusCode::OK, Json(response)));
+            Ok((StatusCode::OK, Json(response)))
         }
         None => {
             let response = Response {
@@ -167,7 +164,7 @@ pub async fn get_student_by_id(
     match student {
         Some(user) => {
             // let m = format!("user with email {} exit", student.email).as_str();
-            return Ok((StatusCode::OK, Json(user.clone())));
+            Ok((StatusCode::OK, Json(user.clone())))
         }
         None => {
             let response = Response {
