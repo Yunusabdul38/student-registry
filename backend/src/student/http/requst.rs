@@ -32,15 +32,13 @@ pub async fn add_student(
         .iter()
         .find(|user| user.1.data.email == student.email);
 
-
-        if user.is_some() {
-            let err = format!("USER WITH EMAIL {} exit", student.email);
-            let message = Response {
-                message: err.clone(),
-            };
-            return Err((StatusCode::BAD_GATEWAY, Json(message)));
-        }
-    
+    if user.is_some() {
+        let err = format!("USER WITH EMAIL {} exit", student.email);
+        let message = Response {
+            message: err.clone(),
+        };
+        return Err((StatusCode::BAD_GATEWAY, Json(message)));
+    }
 
     let student: StudentData = StudentData {
         student_id,
