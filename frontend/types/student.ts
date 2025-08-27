@@ -1,39 +1,52 @@
 export interface Student {
-  id?: number;
-  student_id: string; // Unique student identifier
-  first_name: string;
-  last_name: string;
-  dob: string; // ISO date string
-  gender: Gender;
-  email: string;
-  program: Program;
-  student_status: StudentStatus;
-  created_at?: string;
-  updated_at?: string;
+  student_id: string;
+  data: {
+    first_name: string;
+    last_name: string;
+    dob: {
+      day: number;
+      month: "Jenuary " |
+      "February" |
+      "March" |
+      "April" |
+      "May" |
+      "June" |
+      "July" |
+      "August" |
+      "September" |
+      "October" |
+      "November" |
+      "December" ;
+      year: number;
+    };
+    gender: string;
+    email: string;
+    program: string;
+  };
+  status: "Active" | "Expelled" | "Graduated";
+  created_at: string;
 }
 
 export enum Gender {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
-  OTHER = "OTHER",
+  MALE = "Male",
+  FEMALE = "Female",
 }
 
 export enum Program {
-  COMPUTER_SCIENCE = "COMPUTER_SCIENCE",
-  ENGINEERING = "ENGINEERING",
-  BUSINESS = "BUSINESS",
-  MEDICINE = "MEDICINE",
-  LAW = "LAW",
-  ARTS = "ARTS",
-  SCIENCE = "SCIENCE",
+  Mathematics = "Mathematics",
+  History = "History",
+  Economics = "Economics",
+  Literature = "Literature",
+  Physics = "Physics",
+  Biochemistry = "Biochemistry",
+  ComputerScience = "Computer Science",
+  Architecture = "Architecture",
 }
 
 export enum StudentStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  GRADUATED = "GRADUATED",
-  SUSPENDED = "SUSPENDED",
-  TRANSFERRED = "TRANSFERRED",
+  Active="Active",
+  Expelled = "Expelled",
+  Graduated = "Graduated",
 }
 
 export interface CreateStudentRequest {

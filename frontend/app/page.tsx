@@ -80,26 +80,26 @@ export default function StudentRegistry() {
     if (searchTerm) {
       filtered = filtered.filter(
         (student) =>
-          student.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          student.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.data.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.data.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.data.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
           student.student_id.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     if (filterProgram !== "all") {
       filtered = filtered.filter(
-        (student) => student.program === filterProgram
+        (student) => student.data.program === filterProgram
       );
     }
 
     if (filterGender !== "all") {
-      filtered = filtered.filter((student) => student.gender === filterGender);
+      filtered = filtered.filter((student) => student.data.gender === filterGender);
     }
 
     if (filterStatus !== "all") {
       filtered = filtered.filter(
-        (student) => student.student_status === filterStatus
+        (student) => student.status === filterStatus
       );
     }
 
@@ -142,7 +142,7 @@ export default function StudentRegistry() {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/students/${editingStudent.id}`, {
+      const response = await fetch(`/api/students/${editingStudent.student_id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

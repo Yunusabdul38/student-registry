@@ -1,0 +1,57 @@
+version: '3.9'  # Updated for profiles support
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: student-registry-db
+    restart: unless-stopped
+    env_file:
+      - .env  # Optional: Load secrets from .env file
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fanofafan}
+      POSTGRES_DB: ${POSTGRES_DB:-student-registry}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-student-registry}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - student-network
+
+  student-api:
+    profiles: ["prod"]  # Only runs in production mode
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: student-registry-api
+    restart: unless-stopped
+    env_file:
+      - .env  # Optional: Load secrets from .env file
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-fanofafan}@postgres:5432/${POSTGRES_DB:-student-registry}
+      DATABASE_NAME: ${POSTGRES_DB:-student-registry}
+      DATABASE_POOL_MAX_SIZE: ${DATABASE_POOL_MAX_SIZE:-10}
+      APP_ENVIRONMENT: ${APP_ENVIRONMENT:-development}
+      PORT: ${PORT:-8080}
+    ports:
+      - "2005:${PORT:-8080}"  # Map host 2005 to container's $PORT (fix for mismatch)
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - student-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  student-network:
+    driver: bridge
